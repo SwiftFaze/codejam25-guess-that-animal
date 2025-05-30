@@ -1,0 +1,38 @@
+html,
+body {
+    background: pink;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+#captcha-container {
+    background: white;
+    width: 390px;
+    height: 300px;
+    display: flex;
+}
+
+.question-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.question-container-hidden {
+    display: none;
+}
+
+.question-contents {
+    flex-grow: 1;
+}
+
+.question-title {
+}
+
+.answer-button-container {
+    justify-content: space-between;
+    display: flex;
+}
+
+
