@@ -42,7 +42,7 @@ const QUESTION_2_HARD_ANSWER = 'hedgehog';
 
 const QUESTION_3_EASY_ANSWER = 'meow';
 const QUESTION_3_MEDIUM_ANSWER = 'hiss';
-const QUESTION_3_HARD_ANSWER = 'hoannk';
+const QUESTION_3_HARD_ANSWER = 'hawnk';
 
 const QUESTION_4_EASY_ANSWER = 'rabbit';
 const QUESTION_4_MEDIUM_ANSWER = 'moose';
