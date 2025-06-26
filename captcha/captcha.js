@@ -84,6 +84,20 @@ let revealedLettersEasy = Array(QUESTION_5_EASY_ANSWER.length).fill("_");
     });
   }
 
+  document.querySelectorAll('.sound-button').forEach(button => {
+    button.addEventListener('click', () => {
+      const soundFile = button.getAttribute('data-sound');
+      const audio = new Audio(soundFile);
+      audio.play();
+    });
+  });
+  document.querySelectorAll('.question-image-sound').forEach(button => {
+    button.addEventListener('click', () => {
+      const soundFile = button.getAttribute('data-sound');
+      const audio = new Audio(soundFile);
+      audio.play();
+    });
+  });
 
 })(window, document);
 
@@ -327,18 +341,11 @@ function isCorrectAnswer() {
       checkGuessCount(QUESTION_5_EASY_ANSWER);
     }
   }
-
-
-
 }
 
 function onSubmitGuess() {
   isCorrectAnswer()
 }
-
-
-
-
 
 function nextQuestion() {
   successMessage()
@@ -351,24 +358,6 @@ function nextQuestion() {
   }, PAGE_CHANGE_DELAY);
 }
 
-
-function playSound() {
-  document.querySelectorAll('.sound-button').forEach(button => {
-    button.addEventListener('click', () => {
-      const soundFile = button.getAttribute('data-sound');
-      const audio = new Audio(soundFile);
-      audio.play();
-    });
-  });
-  document.querySelectorAll('.question-image-sound').forEach(button => {
-    button.addEventListener('click', () => {
-      const soundFile = button.getAttribute('data-sound');
-      const audio = new Audio(soundFile);
-      audio.play();
-    });
-  });
-
-}
 
 function resetZoom() {
   image.style.transform = `scale(1)`;
