@@ -13,30 +13,33 @@ function captchaSuccess() {
  * GLOBAL VARIABLES
  */
 const image = document.getElementById("zoom-image");
-let zoomLevel = 4;
+const START_ZOOM_LEVEL = 20;
+const MIN_ZOOM = 1;
+const QUESTION_RETRY_AMOUNT = 3;
+const PAGE_CHANGE_DELAY = 3000;
 
+let zoomLevel = START_ZOOM_LEVEL;
 if (image) {
   image.style.transform = `scale(${zoomLevel})`;
   image.style.transition = 'transform 0.5s ease';
 }
-guessCount = 0
 
-const PAGE_CHANGE_DELAY = 2000;
-const QUESTION_RETRY_AMOUNT = 3;
+let guessCount = 0;
+let zoomCount = 0;
 
 
 const QUESTION_1_EASY_ANSWER = '2';
 const QUESTION_1_MEDIUM_ANSWER = '3';
 const QUESTION_1_HARD_ANSWER = '2';
 
-const QUESTION_2_EASY_ANSWER = 'dog';
-const QUESTION_2_MEDIUM_ANSWER = 'dog';
-const QUESTION_2_HARD_ANSWER = 'dog';
+const QUESTION_2_EASY_ANSWER = 'giraffe';
+const QUESTION_2_MEDIUM_ANSWER = 'jackrabbit';
+const QUESTION_2_HARD_ANSWER = 'hedgehog';
 
 
 const QUESTION_3_EASY_ANSWER = 'meow';
 const QUESTION_3_MEDIUM_ANSWER = 'hiss';
-const QUESTION_3_HARD_ANSWER = 'honk';
+const QUESTION_3_HARD_ANSWER = 'hoannk';
 
 const QUESTION_4_EASY_ANSWER = 'rabbit';
 const QUESTION_4_MEDIUM_ANSWER = 'moose';
@@ -46,13 +49,36 @@ const QUESTION_5_EASY_ANSWER = 'sharkyle';
 const QUESTION_5_MEDIUM_ANSWER = 'ladyrachnocrab';
 const QUESTION_5_HARD_ANSWER = 'gipelibatguin';
 
+const QUESTION_5_EASY_COMBO = {
+  shark: "shark",
+  crocodile: "yle",
+};
 
+const QUESTION_5_MEDI_COMBO = {
+  ladybug: "lady",
+  scorpion: "rachno",
+  crab: "crab",
+};
+const QUESTION_5_HARD_COMBO = {
+  giraffe: "gi",
+  pelican: "peli",
+  bat: "bat",
+  penguin: "guin"
+};
+let QUESTION_5_EASY_COMBO_ANSWER = Object.keys(QUESTION_5_EASY_COMBO)
+let QUESTION_5_MEDI_COMBO_ANSWER = Object.keys(QUESTION_5_MEDI_COMBO)
+let QUESTION_5_HARD_COMBO_ANSWER = Object.keys(QUESTION_5_HARD_COMBO)
+
+let revealedLettersHard = Array(QUESTION_5_HARD_ANSWER.length).fill("_");
+let revealedLettersMedium = Array(QUESTION_5_MEDIUM_ANSWER.length).fill("_");
+let revealedLettersEasy = Array(QUESTION_5_EASY_ANSWER.length).fill("_");
 /******************************** */
 
 
 (function (window, document) {
   playSound();
 
+  disableButton();
 
   const soundButtons = document.querySelectorAll('.sound-button');
 
@@ -82,14 +108,31 @@ function nextPage() {
   }, PAGE_CHANGE_DELAY);
 }
 
+function revealLastAnimal(guessedAnimal, fullAnswer, comboMap, revealedLetters) {
+  const guess = guessedAnimal.toLowerCase();
+  const part = comboMap[guess];
+  if (!part) {
+    return;
+  }
+  const matchIndex = fullAnswer.indexOf(part);
+  if (matchIndex === -1) {
+    return;
+  }
+  for (let i = 0; i < part.length; i++) {
+    revealedLetters[matchIndex + i] = fullAnswer[matchIndex + i];
+  }
+  const displayString = revealedLetters.join("");
+  document.getElementById("revealed-animals").textContent = displayString;
+}
+
+
+
+
 function revealAnimal(message) {
-
   const revealImage = document.getElementById("question-reveal-image");
-
   if (revealImage) {
     revealImage.src = revealImage.src.replace(".png", "-reveal.png")
   }
-
   const msg = document.getElementById("revealed-animals");
   if (msg) {
     msg.textContent = message;
@@ -127,6 +170,8 @@ function isCorrectAnswer() {
   const input = document.getElementById("user-answer");
   if (input) {
     userAnswer = input.value.trim().toLowerCase();
+    input.value = ""
+    disableButton()
   } else {
     userAnswer = document.querySelector('input[name="answer"]:checked').value;
   }
@@ -181,7 +226,7 @@ function isCorrectAnswer() {
       revealAnimal(QUESTION_2_EASY_ANSWER)
       nextQuestion();
     } else {
-      incorrectMessage()
+      zoomOut(QUESTION_2_EASY_ANSWER)
     }
   }
 
@@ -243,36 +288,66 @@ function isCorrectAnswer() {
 
 
   if (filename.includes("question-5-hard")) {
-    if (userAnswer.toLowerCase() === QUESTION_5_HARD_ANSWER) {
-      revealAnimal(QUESTION_5_HARD_ANSWER)
-      captchaSuccess()
+    const answer = userAnswer.toLowerCase();
+    const index = QUESTION_5_HARD_COMBO_ANSWER.indexOf(answer);
+    if (index !== -1) {
+      QUESTION_5_HARD_COMBO_ANSWER.splice(index, 1);
+      revealLastAnimal(answer, QUESTION_5_HARD_ANSWER, QUESTION_5_HARD_COMBO, revealedLettersHard);
+      successMessage();
+
+      if (QUESTION_5_HARD_COMBO_ANSWER.length === 0) {
+        revealAnimal(QUESTION_5_HARD_ANSWER);
+        captchaSuccess();
+      }
     } else {
-      checkGuessCount(QUESTION_5_HARD_ANSWER)
-    }
-  }
-  if (filename.includes("question-5-medi")) {
-    if (userAnswer.toLowerCase() === QUESTION_5_MEDIUM_ANSWER) {
-      revealAnimal(QUESTION_5_MEDIUM_ANSWER)
-      captchaSuccess()
-    } else {
-      checkGuessCount(QUESTION_5_MEDIUM_ANSWER)
+      checkGuessCount(QUESTION_5_HARD_ANSWER);
     }
   }
 
-  if (filename.includes("question-5-easy")) {
-    if (userAnswer.toLowerCase() === QUESTION_5_EASY_ANSWER) {
-      revealAnimal(QUESTION_5_EASY_ANSWER)
-      captchaSuccess()
+
+  if (filename.includes("question-5-medi")) {
+    const answer = userAnswer.toLowerCase();
+    const index = QUESTION_5_MEDI_COMBO_ANSWER.indexOf(answer);
+    if (index !== -1) {
+      QUESTION_5_MEDI_COMBO_ANSWER.splice(index, 1);
+      revealLastAnimal(answer, QUESTION_5_MEDIUM_ANSWER, QUESTION_5_MEDI_COMBO, revealedLettersMedium);
+      successMessage();
+      if (QUESTION_5_MEDI_COMBO_ANSWER.length === 0) {
+        revealAnimal(QUESTION_5_MEDIUM_ANSWER);
+        captchaSuccess();
+      }
     } else {
-      incorrectMessage()
+      checkGuessCount(QUESTION_5_MEDIUM_ANSWER);
     }
   }
+
+
+  if (filename.includes("question-5-easy")) {
+    const answer = userAnswer.toLowerCase();
+    const index = QUESTION_5_EASY_COMBO_ANSWER.indexOf(answer);
+    if (index !== -1) {
+      QUESTION_5_EASY_COMBO_ANSWER.splice(index, 1);
+      revealLastAnimal(answer, QUESTION_5_EASY_ANSWER, QUESTION_5_EASY_COMBO, revealedLettersEasy);
+      successMessage();
+      if (QUESTION_5_EASY_COMBO_ANSWER.length === 0) {
+        revealAnimal(QUESTION_5_EASY_ANSWER);
+        captchaSuccess();
+      }
+    } else {
+      checkGuessCount(QUESTION_5_EASY_ANSWER);
+    }
+  }
+
+
 
 }
 
 function onSubmitGuess() {
   isCorrectAnswer()
 }
+
+
+
 
 
 function nextQuestion() {
@@ -310,12 +385,13 @@ function resetZoom() {
 }
 
 function zoomOut(message) {
-  // ZOOM OUT
-  if (zoomLevel > 1) {
-    zoomLevel -= 1;
+  zoomCount++;
+  if (guessCount < (QUESTION_RETRY_AMOUNT - 1)) {
+    const t = zoomCount / (QUESTION_RETRY_AMOUNT - 1);
+    zoomLevel = START_ZOOM_LEVEL * Math.pow(MIN_ZOOM / START_ZOOM_LEVEL, t);
     image.style.transform = `scale(${zoomLevel})`;
   }
-  checkGuessCount(message)
+  checkGuessCount(message);
 }
 
 function checkGuessCount(message) {
@@ -330,8 +406,15 @@ function checkGuessCount(message) {
   }
 
 }
+function disableButton() {
+  const input = document.getElementById("user-answer");
+  const button = document.getElementById("submit-guess");
+  if (input && button) {
+    button.disabled = input.value.trim() === "";
+    input.addEventListener("input", () => {
+      button.disabled = input.value.trim() === "";
+    });
+  }
 
-
-
-
+}
 
