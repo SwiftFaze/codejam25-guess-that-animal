@@ -51,8 +51,8 @@ After every bad attempt, the image zooms out. After 3 incorrect guesses a new im
     - Joke/Meme image: `hedgehog.png`
     - Answer: `hedgehog`
 - Medium:
-    - Joke/Meme image: `hedgehog.png`
-    - Answer: `hedgehog`
+    - Joke/Meme image: `jackrabbit.png`
+    - Answer: `jackrabbit`
 - Easy:
     - Normal image: `giraffe.img`
     - Answer: `giraffe`
