@@ -90,7 +90,6 @@ let revealedLettersEasy = Array(QUESTION_5_EASY_ANSWER.length).fill("_");
 
 
   document.querySelectorAll('.sound-button').forEach(button => {
-    console.log(window.location.pathname)
     const basePath = window.location.pathname.includes(REPO_NAME)
         ? REPO_AUDIO_PATH
         : "";
