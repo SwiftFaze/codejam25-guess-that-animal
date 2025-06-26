@@ -90,9 +90,12 @@ let revealedLettersEasy = Array(QUESTION_5_EASY_ANSWER.length).fill("_");
   });
 
 
-  document.getElementById("submit-guess").addEventListener("click", () => {
-    onSubmitGuess()
-  })
+  const guessButton = document.getElementById("submit-guess");
+  if (guessButton) {
+    guessButton.addEventListener("click", () => {
+      onSubmitGuess();
+    });
+  }
 
 
 })(window, document);
