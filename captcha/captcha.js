@@ -80,15 +80,6 @@ let revealedLettersEasy = Array(QUESTION_5_EASY_ANSWER.length).fill("_");
 
   disableButton();
 
-  const soundButtons = document.querySelectorAll('.sound-button');
-
-  soundButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const audio = new Audio(button.dataset.sound);
-      audio.play();
-    });
-  });
-
 
   const guessButton = document.getElementById("submit-guess");
   if (guessButton) {
