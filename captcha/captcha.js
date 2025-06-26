@@ -12,8 +12,6 @@ function captchaSuccess() {
  */
 /******************************** */
 
-const REPO_NAME = '/codejam25-guess-that-animal/';
-const REPO_AUDIO_PATH = 'https://raw.githubusercontent.com/SwiftFaze/codejam25-guess-that-animal/main/captcha/';
 const image = document.getElementById("zoom-image");
 
 const START_ZOOM_LEVEL = 20;
@@ -90,24 +88,16 @@ let revealedLettersEasy = Array(QUESTION_5_EASY_ANSWER.length).fill("_");
 
 
   document.querySelectorAll('.sound-button').forEach(button => {
-    const basePath = window.location.pathname.includes(REPO_NAME)
-        ? REPO_AUDIO_PATH
-        : "";
-
     button.addEventListener('click', () => {
       const soundFile = button.getAttribute('data-sound');
-      const audio = new Audio(basePath + soundFile);
+      const audio = new Audio(soundFile);
       audio.play();
     });
   });
   document.querySelectorAll('.question-image-sound').forEach(button => {
-    const basePath = window.location.pathname.includes(REPO_NAME)
-        ? REPO_AUDIO_PATH
-        : "";
-
     button.addEventListener('click', () => {
       const soundFile = button.getAttribute('data-sound');
-      const audio = new Audio(basePath + soundFile);
+      const audio = new Audio(soundFile);
       audio.play();
     });
   });
