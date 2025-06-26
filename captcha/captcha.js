@@ -12,7 +12,7 @@ function captchaSuccess() {
  */
 /******************************** */
 
-const REPO_NAME = 'codejam25-guess-that-animal';
+const REPO_NAME = '/codejam25-guess-that-animal/';
 const REPO_AUDIO_PATH = 'https://raw.githubusercontent.com/SwiftFaze/codejam25-guess-that-animal/main/captcha/';
 const image = document.getElementById("zoom-image");
 
