@@ -6,13 +6,15 @@ function captchaSuccess() {
   window.top.postMessage("success", '*');
 }
 
-/******************************** */
-
 /**
  *
  * GLOBAL VARIABLES
  */
+/******************************** */
+
+const REPO_NAME = '/codejam25-guess-that-animal/';
 const image = document.getElementById("zoom-image");
+
 const START_ZOOM_LEVEL = 20;
 const MIN_ZOOM = 1;
 const QUESTION_RETRY_AMOUNT = 3;
@@ -84,17 +86,27 @@ let revealedLettersEasy = Array(QUESTION_5_EASY_ANSWER.length).fill("_");
     });
   }
 
+
+
   document.querySelectorAll('.sound-button').forEach(button => {
+    const basePath = window.location.pathname.includes(REPO_NAME)
+        ? REPO_NAME
+        : "";
+
     button.addEventListener('click', () => {
       const soundFile = button.getAttribute('data-sound');
-      const audio = new Audio(soundFile);
+      const audio = new Audio(basePath + soundFile);
       audio.play();
     });
   });
   document.querySelectorAll('.question-image-sound').forEach(button => {
+    const basePath = window.location.pathname.includes(REPO_NAME)
+        ? REPO_NAME
+        : "";
+
     button.addEventListener('click', () => {
       const soundFile = button.getAttribute('data-sound');
-      const audio = new Audio(soundFile);
+      const audio = new Audio(basePath + soundFile);
       audio.play();
     });
   });
