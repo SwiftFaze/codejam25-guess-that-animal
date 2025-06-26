@@ -76,10 +76,6 @@ let revealedLettersEasy = Array(QUESTION_5_EASY_ANSWER.length).fill("_");
 
 
 (function (window, document) {
-  playSound();
-
-  disableButton();
-
 
   const guessButton = document.getElementById("submit-guess");
   if (guessButton) {
